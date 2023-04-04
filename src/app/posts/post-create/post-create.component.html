@@ -9,10 +9,14 @@
                     placeholder="Title">
             <mat-error *ngIf="form.get('title').invalid">Please enter title</mat-error>
         </mat-form-field>
-<!--        <div>-->
-<!--            <button mat-stroked-button type="button" (click)="filePicker.click()">Pick image</button>-->
-<!--            <input type="file" #filePicker>-->
-<!--        </div>-->
+        <div>
+            <button mat-stroked-button type="button" (click)="filePicker.click()">Pick image</button>
+            <input type="file" #filePicker (change)="onImagePicked($event)">
+            <mat-error *ngIf="form.get('image').invalid">Please choose image</mat-error>
+        </div>
+        <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
+            <img [src]="imagePreview" [alt]="form.value.title">
+        </div>
         <mat-form-field>
             <textarea
                     matInput

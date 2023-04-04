@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {PostsService} from "../posts.service";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {Post} from "../post.model";
+import {mimeType} from "./mime-type.validator";
 
 @Component({
     selector: 'app-post-create',
@@ -16,17 +17,31 @@ export class PostCreateComponent implements OnInit {
     public post: Post;
     public isLoading = false
     form: FormGroup;
+    imagePreview: string;
 
     constructor(public postService: PostsService, public route: ActivatedRoute) {
     }
 
+    onImagePicked(event: Event) {
+        const file = (event.target as HTMLInputElement).files[0];
+        this.form.patchValue({'image': file});
+        this.form.get('image').updateValueAndValidity();
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.imagePreview = reader.result as string;
+        }
+        reader.readAsDataURL(file);
+    }
+
     onSavePost() {
-        if (this.form.invalid) return;
+        if (this.form.invalid) {
+            return;
+        }
         this.isLoading = true;
         if (this.mode == 'create') {
-            this.postService.addPost(this.form.value.title, this.form.value.content);
+            this.postService.addPost(this.form.value.title, this.form.value.content, this.form.value.image);
         } else {
-            this.postService.updatePost(this.postId, this.form.value.title, this.form.value.content);
+            this.postService.updatePost(this.postId, this.form.value.title, this.form.value.content, this.form.value.image);
         }
         this.form.reset();
     }
@@ -38,7 +53,8 @@ export class PostCreateComponent implements OnInit {
             }),
             'content': new FormControl(null, {
                 validators: [Validators.required]
-            })
+            }),
+            'image': new FormControl(null, {validators: [Validators.required], asyncValidators: [mimeType]})
         });
         this.route.paramMap.subscribe((paramMap: ParamMap) => {
             if (paramMap.has('postId')) {
@@ -50,7 +66,8 @@ export class PostCreateComponent implements OnInit {
                     this.post = transformedPosts;
                     this.form.setValue({
                         'title': this.post.title,
-                        'content': this.post.content
+                        'content': this.post.content,
+                        'image': this.post.imagePath
                     });
                 });
             } else {
