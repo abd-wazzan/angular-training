@@ -50,6 +50,8 @@ export class AuthService {
         this.httpClient.post<{ message: string, data: any }>('http://localhost:3000/api/auth/signup', authData)
             .subscribe((res) => {
                 this.router.navigate(["/"]);
+            }, error => {
+                this.authStatusListener.next(false)
             });
     }
 
@@ -77,6 +79,8 @@ export class AuthService {
                     this.authStatusListener.next(true);
                     this.router.navigate(["/"]);
                 }
+            }, error => {
+                this.authStatusListener.next(false)
             });
     }
 
