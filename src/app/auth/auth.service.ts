@@ -21,4 +21,16 @@ export class AuthService {
                 this.router.navigate(["/"]);
             });
     }
+
+    login(email: string, password: string) {
+        const authData: AuthData = {
+            email: email,
+            password: password
+        };
+        this.httpClient.post<{ message: string, data: any }>('http://localhost:3000/api/auth/login', authData)
+            .subscribe((res) => {
+                console.log(res)
+                this.router.navigate(["/"]);
+            });
+    }
 }
