@@ -3,6 +3,9 @@ import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {AuthData} from "./auth-data.model";
 import {Subject} from "rxjs";
+import {environment} from "../../environments/environment";
+
+const BACKEND_URL = environment.apiUrl + "/auth/"
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -47,7 +50,7 @@ export class AuthService {
             email: email,
             password: password
         };
-        this.httpClient.post<{ message: string, data: any }>('http://localhost:3000/api/auth/signup', authData)
+        this.httpClient.post<{ message: string, data: any }>(BACKEND_URL + 'signup', authData)
             .subscribe((res) => {
                 this.router.navigate(["/"]);
             }, error => {
@@ -65,7 +68,7 @@ export class AuthService {
             token: string,
             expiresIn: number,
             userId: string
-        }>('http://localhost:3000/api/auth/login', authData)
+        }>(BACKEND_URL + 'login', authData)
             .subscribe((res) => {
                 this.token = res.token;
                 if (this.token) {

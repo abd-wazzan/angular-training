@@ -3,6 +3,9 @@ import {Injectable} from "@angular/core";
 import {map, Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {environment} from "../../environments/environment";
+
+const BACKEND_URL = environment.apiUrl + "/posts/"
 
 @Injectable({providedIn: 'root'})
 export class PostsService {
@@ -23,7 +26,7 @@ export class PostsService {
             message: string,
             data: any,
             count: number
-        }>('http://localhost:3000/api/posts' + queryParams)
+        }>(BACKEND_URL + queryParams)
             .pipe(map((res) => {
                 return {
                     count: res.count,
@@ -50,18 +53,18 @@ export class PostsService {
         postData.append("title", title);
         postData.append("content", content);
         postData.append("image", image, title);
-        this.httpClient.post<{ message: string, data: any }>('http://localhost:3000/api/posts', postData)
+        this.httpClient.post<{ message: string, data: any }>(BACKEND_URL, postData)
             .subscribe(() => {
                 this.router.navigate(["/"]);
             });
     }
 
     deletePost(id: string) {
-        return this.httpClient.delete<{ message: string }>('http://localhost:3000/api/posts/' + id);
+        return this.httpClient.delete<{ message: string }>(BACKEND_URL + id);
     }
 
     getPost(id: string) {
-        return this.httpClient.get<{ message: string, data: any }>('http://localhost:3000/api/posts/' + id)
+        return this.httpClient.get<{ message: string, data: any }>(BACKEND_URL + id)
             .pipe(map((res) => {
                     return {
                         id: res.data._id,
@@ -85,7 +88,7 @@ export class PostsService {
         } else {
             postData = {id: id, title: title, content: content, imagePath: image, creator: null};
         }
-        this.httpClient.put<{ message: string, data: any }>('http://localhost:3000/api/posts/' + id, postData)
+        this.httpClient.put<{ message: string, data: any }>(BACKEND_URL + id, postData)
             .subscribe(() => {
                 this.router.navigate(["/"]);
             });
