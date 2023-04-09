@@ -33,6 +33,7 @@ export class PostsService {
                             title: post.title,
                             content: post.content,
                             imagePath: post.imagePath,
+                            creator: post.creator
                         }
                     })
                 };
@@ -66,7 +67,8 @@ export class PostsService {
                         id: res.data._id,
                         title: res.data.title,
                         content: res.data.content,
-                        imagePath: res.data.imagePath
+                        imagePath: res.data.imagePath,
+                        creator: res.data.creator
                     };
                 })
             );
@@ -81,7 +83,7 @@ export class PostsService {
             postData.append("content", content);
             postData.append("image", image as File, title);
         } else {
-            postData = {id: id, title: title, content: content, imagePath: image};
+            postData = {id: id, title: title, content: content, imagePath: image, creator: null};
         }
         this.httpClient.put<{ message: string, data: any }>('http://localhost:3000/api/posts/' + id, postData)
             .subscribe(() => {

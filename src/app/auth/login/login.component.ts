@@ -1,21 +1,23 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthService} from "../auth.service";
 
 @Component({
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  public isLoading = false;
+    public isLoading = false;
 
-  constructor(public  authService: AuthService) {
-  }
-
-  onLogin(form: NgForm) {
-    if (form.invalid) {
-      return;
+    constructor(public authService: AuthService) {
     }
-    this.authService.login(form.value.email, form.value.password);
-  }
+
+    onLogin(form: NgForm) {
+        if (form.invalid) {
+            return;
+        } else {
+            this.isLoading = true;
+            this.authService.login(form.value.email, form.value.password);
+        }
+    }
 }
